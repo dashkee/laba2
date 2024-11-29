@@ -152,10 +152,10 @@ void EmptyCells(struct Game* game, int x, int y) {
     // Получение ячейки
     struct Cell* cell = &game->field.cells[x][y];
 
-    if (cell->isOpened || cell->isFlagged || cell->mineCount != 0) return;
-
+    if (cell->isOpened || cell->isFlagged) return; // Проверка только такая, на количество позже
     // Открытие ячейки
     cell->isOpened = 1;
+    if (cell->mineCount != 0) return;
 
     // Если ячейка пустая, рекурсивно открываем соседние ячейки
     if (cell->mineCount == 0) {
@@ -249,11 +249,14 @@ void printField(Field* field) {
 //функция открытия ячейки
 void openCell(struct Game* game, int x, int y) {
     if (x < 0 || x >= SIZE || y < 0 || y >= SIZE || game->field.cells[x][y].isOpened || game->field.cells[x][y].isFlagged) return;
-    game->field.cells[x][y].isOpened = 1;
     if (game->field.cells[x][y].isMine) gameOver(game);
     if (game->field.cells[x][y].mineCount == 0)
     {
         EmptyCells(game, x, y);
+    }
+    else
+    {
+        game->field.cells[x][y].isOpened = 1;
     }
 }
 
