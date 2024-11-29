@@ -307,7 +307,18 @@ int main() {
             statistics.totalTime += game.player.time;
             saveStatistics(&statistics);
         }
-        
+        else if (menu.selectedOption == 1) {
+            system("cls"); // Очистка консоли
+            printSettings(&settings);
+        }
+        else if (menu.selectedOption == 2) {
+            system("cls"); // Очистка консоли
+            printStatistics(&statistics);
+        }
+        else if (menu.selectedOption == 3) {
+            saveStatistics(&statistics);
+            exit(0);
+        }
     }
     return 0;
 }
