@@ -205,3 +205,58 @@ void gameOver(Game* game) {
     printf("Вы проиграли!\n");
     printField(&game->field);
 }
+
+//функция вывода меню
+void printMenu(Menu* menu) {
+    printf("Меню:\n");
+    for (int i = 0; i < 4; i++) {
+        printf("%d) %s\n", i, menu->options[i]);
+    }
+}
+
+//обработка выбора пункта меню
+void MenuInput(Menu* menu, Game* game, Settings* settings) {
+    int input;
+    printf("Выберите действие и введите номер пункта меню: ");
+    scanf("%d", &input);
+    if (input == 0) { menu->selectedOption = 0; return; }
+    if (input == 1) { menu->selectedOption = 1; return; }
+    if (input == 2) { menu->selectedOption = 2; return; }
+    if (input == 3) {
+        menu->selectedOption = 3;
+        return;
+    }
+}
+
+//функция вывода настроеек
+void printSettings(Settings* settings) {
+    printf("Настройки:\n");
+    printf("Размер поля: %d\n", settings->size);
+    printf("Количество мин: %d\n", settings->mines);
+}
+
+//функция сохранения статистики в файл
+void saveStatistics(Statistics* statistics) {
+    FILE* file = fopen("statistics.txt", "w");
+    if (file) {
+        fprintf(file, "%d\n%d\n%ld", statistics->wins, statistics->losses, statistics->totalTime);
+        fclose(file);
+    }
+}
+
+//функция выгрузки статистики из файла
+void loadStatistics(Statistics* statistics) {
+    FILE* file = fopen("statistics.txt", "r");
+    if (file) {
+        fscanf(file, "%d\n%d\n%ld", &statistics->wins, &statistics->losses, &statistics->totalTime);
+        fclose(file);
+    }
+}
+
+//функция печати статистики
+void printStatistics(Statistics* statistics) {
+    printf("Статистика:\n");
+    printf("Победы: %d\n", statistics->wins);
+    printf("Поражения: %d\n", statistics->losses);
+    printf("Общее время: %ld секунд\n", statistics->totalTime);
+}
