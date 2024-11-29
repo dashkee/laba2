@@ -260,3 +260,54 @@ void printStatistics(Statistics* statistics) {
     printf("Поражения: %d\n", statistics->losses);
     printf("Общее время: %ld секунд\n", statistics->totalTime);
 }
+
+int main() {
+    SetConsoleCP(1251);// установка кодовой страницы win-cp 1251 в поток ввода
+    SetConsoleOutputCP(1251); // установка кодовой страницы win-cp 1251 в поток вывода
+    setlocale(LC_ALL, "Rus");
+    Game game;
+    Menu menu;
+    Settings settings = { SIZE, MINES, 0 }; // Начальные настройки
+    Statistics statistics;
+
+    loadStatistics(&statistics);
+    strcpy(menu.options[0], "Новая игра");
+    strcpy(menu.options[1], "Настройки");
+    strcpy(menu.options[2], "Статистика");
+    strcpy(menu.options[3], "Выход");
+    menu.selectedOption = 0;
+
+    while (1) {
+
+        printMenu(&menu);
+        MenuInput(&menu, &game, &settings);
+
+        if (menu.selectedOption == 0) {
+            system("cls"); // Очистка консоли
+            initGame(&game, settings);
+            time_t start_time = time(NULL);
+            while (game.isRunning) {
+                printField(&game.field);
+                int x, y, action;
+                printf("Введите координаты (x y) и действие (0 - открыть, 1 - флаг): ");
+                scanf("%d %d %d", &x, &y, &action);
+
+                if (!game.gameStarted) {
+                    placeMines(&game.field, x, y);
+                    countMines(&game.field);
+                    game.gameStarted = 1;
+                }
+                if (action == 0) openCell(&game, x, y);
+                else if (action == 1) flagCell(&game, x, y);
+                game.player.time = time(NULL) - start_time;
+                Win(&game);
+            }
+            if (game.player.score > 0) statistics.wins++;
+            else statistics.losses++;
+            statistics.totalTime += game.player.time;
+            saveStatistics(&statistics);
+        }
+        
+    }
+    return 0;
+}
